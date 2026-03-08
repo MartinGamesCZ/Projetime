@@ -4,6 +4,7 @@ import * as React from "react";
 
 import { NavMain } from "@/components/nav-main";
 import { NavProjects } from "@/components/nav-projects";
+import { NavClients } from "@/components/nav-clients";
 import { NavSecondary } from "@/components/nav-secondary";
 import { NavUser } from "@/components/nav-user";
 import {
@@ -31,7 +32,7 @@ import {
   CodeIcon,
 } from "@phosphor-icons/react";
 import { useState } from "react";
-import { TProject } from "@/types/entities";
+import { TProject, TClient } from "@/types/entities";
 import { API } from "@/api/api";
 import { toast } from "react-toastify";
 import { fullscreenLoader } from "./fullscreen-loader";
@@ -68,6 +69,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const [projects, setProjects] = useState<Omit<TProject, "client">[] | null>(
     null,
   );
+  const [clients, setClients] = useState<TClient[] | null>(null);
 
   const fetchProjects = React.useCallback(async () => {
     fullscreenLoader.push("sidebar-project-list");
@@ -80,9 +82,21 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     setProjects(projects.data);
   }, []);
 
+  const fetchClients = React.useCallback(async () => {
+    fullscreenLoader.push("sidebar-client-list");
+
+    const clients = await API.clients.list();
+
+    fullscreenLoader.remove("sidebar-client-list");
+
+    if (!clients.isOk) return toast.error(clients.message);
+    setClients(clients.data);
+  }, []);
+
   React.useEffect(() => {
     fetchProjects();
-  }, [fetchProjects]);
+    fetchClients();
+  }, [fetchProjects, fetchClients]);
 
   return (
     <Sidebar variant="inset" {...props}>
@@ -107,13 +121,29 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        {projects && (
+        {projects && clients && (
           <NavProjects
             projects={projects.map((p) => ({
+              id: p.id,
               name: p.name,
               url: `/projects/${p.id}`,
               icon: <NotebookIcon />,
+              rate: p.rate,
+              clientId: "client" in p ? (p as any).client?.id || "" : "",
             }))}
+            clients={clients}
+            onProjectCreated={fetchProjects}
+          />
+        )}
+        {clients && (
+          <NavClients
+            clients={clients.map((c) => ({
+              id: c.id,
+              name: c.name,
+              url: `/clients/${c.id}`,
+              icon: <Briefcase />,
+            }))}
+            onClientCreated={fetchClients}
           />
         )}
         <NavSecondary items={data.navSecondary} className="mt-auto" />
