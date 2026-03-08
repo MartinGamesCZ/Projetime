@@ -48,6 +48,7 @@ async function bootstrap() {
       SwaggerModule.createDocument(app, swaggerConfig),
     );
 
+  app.enableCors('*');
   app.useGlobalGuards(new ElectronAuthGuard());
   app.setGlobalPrefix('/api');
   app.enableVersioning({

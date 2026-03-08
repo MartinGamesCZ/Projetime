@@ -99,7 +99,7 @@ export class Application {
       .setCwd(path.join(process.cwd(), "../frontend"))
       .setEnv("ELECTRON_AUTH_SECRET", ApplicationSecret.get())
       .setEnv(
-        "BACKEND_ADDRESS",
+        "NEXT_PUBLIC_BACKEND_ADDRESS",
         `http://localhost:${ApplicationProcessConfig.backendPort}`,
       )
       .spawn();

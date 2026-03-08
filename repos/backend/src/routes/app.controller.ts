@@ -8,8 +8,8 @@ import { ApiVersion } from '@/types/ApiVersion';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get()
-  getHello(): string {
-    return this.appService.getHello();
+  @Get('/health')
+  getHealth() {
+    return this.appService.getHealth();
   }
 }
