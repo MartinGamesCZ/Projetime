@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
+import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { FullscreenLoader } from "@/components/fullscreen-loader";
 import { cn } from "@/lib/utils";
 
-const jetbrainsMono = JetBrains_Mono({subsets:['latin'],variable:'--font-mono'});
-
-const jakarta = Plus_Jakarta_Sans({
+const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
-  variable: "--font-jakarta",
+  variable: "--font-mono",
 });
 
 export const metadata: Metadata = {
@@ -21,8 +20,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("font-mono", jetbrainsMono.variable)}>
-      <body className={`${jakarta.variable} antialiased`}>{children}</body>
+    <html lang="en" className={cn("dark font-mono", jetbrainsMono.variable)}>
+      <body className={`antialiased`}>
+        <FullscreenLoader />
+        {children}
+      </body>
     </html>
   );
 }

@@ -122,5 +122,10 @@ export class Application {
 
   quit() {
     app.quit();
+
+    this.#backendProc?.kill();
+    this.#frontendProc?.kill();
+
+    process.exit();
   }
 }

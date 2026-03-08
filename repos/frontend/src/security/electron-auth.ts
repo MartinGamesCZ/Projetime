@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server";
+import type { NextRequest } from "next/server";
 
 export function electronAuth(request: NextRequest) {
   const secret = process.env.ELECTRON_AUTH_SECRET;
@@ -10,7 +10,7 @@ export function electronAuth(request: NextRequest) {
   }
 
   const header = request.headers.get("x-electron-auth-secret");
-  if (secret != header) return false;
+  if (secret !== header) return false;
 
   return true;
 }

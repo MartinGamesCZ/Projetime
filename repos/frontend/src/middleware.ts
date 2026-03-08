@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import { electronAuth } from "./security/electron-auth";
 
 export function middleware(request: NextRequest) {

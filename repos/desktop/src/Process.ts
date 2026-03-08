@@ -38,6 +38,7 @@ export class Process {
       cwd: this.#cwd ?? process.cwd(),
       env: { ...process.env, ...this.#environment },
       stdio: "inherit",
+      detached: process.platform !== "win32",
     });
 
     return this;
@@ -46,7 +47,13 @@ export class Process {
   kill() {
     if (!this.#proc) return;
 
-    this.#proc.kill();
+    if (this.#proc.pid && process.platform !== "win32") {
+      try {
+        process.kill(-this.#proc.pid);
+      } catch (e) {
+        this.#proc.kill();
+      }
+    } else this.#proc.kill();
 
     return;
   }

@@ -1,12 +1,11 @@
 "use client";
 
-import { API } from "@/api/api";
-import { useEffect } from "react";
+import { AppShell } from "@/components/app-shell";
 
 export default function Page() {
-  useEffect(() => {
-    API.getHealth().then((res) => console.log(res));
-  }, []);
-
-  return <div>Hello World</div>;
+  return (
+    <AppShell>
+      <div>Hello World</div>
+    </AppShell>
+  );
 }

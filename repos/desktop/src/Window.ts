@@ -10,6 +10,8 @@ export class Window {
       show: false,
     });
 
+    this.#appWindow.setMenuBarVisibility(false);
+
     this.#appWindow.loadURL(url);
   }
 
