@@ -1,8 +1,11 @@
 import { DataSource } from 'typeorm';
 
 import { DB_PATH } from '@/config';
+import { ClientEntity } from './entities/Client';
+import { EntryEntity } from './entities/Entry';
+import { ProjectEntity } from './entities/Project';
 
-export const Entities = [];
+export const Entities = [ClientEntity, ProjectEntity, EntryEntity];
 
 export const Database = new DataSource({
   type: 'sqlite',
@@ -12,4 +15,8 @@ export const Database = new DataSource({
   dropSchema: true,
 });
 
-export const Repositories = {};
+export const Repositories = {
+  clients: Database.getRepository(ClientEntity),
+  projects: Database.getRepository(ProjectEntity),
+  entries: Database.getRepository(EntryEntity),
+};
