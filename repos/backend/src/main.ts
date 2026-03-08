@@ -19,8 +19,8 @@ async function bootstrap() {
     Logger.log('Initializing db...');
 
     await Database.initialize()
-      .catch(() => (dbInitialized = false))
-      .then(() => (dbInitialized = true));
+      .then(() => (dbInitialized = true))
+      .catch(() => (dbInitialized = false));
 
     await new Promise((r) => setTimeout(r, 500));
   }

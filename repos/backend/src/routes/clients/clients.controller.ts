@@ -10,8 +10,12 @@ import {
 import { ClientsService } from './clients.service';
 import { CreateClientDto } from '@/dto/clients/create.dto';
 import { UpdateClientDto } from '@/dto/clients/update.dto';
+import { ApiVersion } from '@/types/ApiVersion';
 
-@Controller('clients')
+@Controller({
+  path: '/clients',
+  version: ApiVersion.v1,
+})
 export class ClientsController {
   constructor(private readonly clientsService: ClientsService) {}
 

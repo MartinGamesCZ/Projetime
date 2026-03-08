@@ -6,12 +6,17 @@ import {
   Param,
   Post,
   Put,
+  Version,
 } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { CreateProjectDto } from '@/dto/projects/create.dto';
 import { UpdateProjectDto } from '@/dto/projects/update.dto';
+import { ApiVersion } from '@/types/ApiVersion';
 
-@Controller('/projects')
+@Controller({
+  path: '/projects',
+  version: ApiVersion.v1,
+})
 export class ProjectsController {
   constructor(private readonly projectsService: ProjectsService) {}
 

@@ -27,7 +27,14 @@ import {
   Code,
   ListDashes,
   GithubLogoIcon,
+  NotebookIcon,
+  CodeIcon,
 } from "@phosphor-icons/react";
+import { useState } from "react";
+import { TProject } from "@/types/entities";
+import { API } from "@/api/api";
+import { toast } from "react-toastify";
+import { fullscreenLoader } from "./fullscreen-loader";
 
 const data = {
   /*user: {
@@ -45,30 +52,38 @@ const data = {
   ],
   navSecondary: [
     {
+      title: "Swagger",
+      url: process.env.NEXT_PUBLIC_BACKEND_ADDRESS + "/api/swagger",
+      icon: <CodeIcon />,
+    },
+    {
       title: "GitHub",
       url: "https://github.com/MartinGamesCZ/Projetime",
       icon: <GithubLogoIcon />,
     },
   ],
-  projects: [
-    {
-      name: "Projetime App",
-      url: "/projects/projetime",
-      icon: <Code />,
-    },
-    {
-      name: "Client Work",
-      url: "/projects/client",
-      icon: <Briefcase />,
-    },
-    {
-      name: "Internal Tools",
-      url: "/projects/internal",
-      icon: <CropIcon />,
-    },
-  ],
 };
+
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const [projects, setProjects] = useState<Omit<TProject, "client">[] | null>(
+    null,
+  );
+
+  const fetchProjects = React.useCallback(async () => {
+    fullscreenLoader.push("sidebar-project-list");
+
+    const projects = await API.projects.list();
+
+    fullscreenLoader.remove("sidebar-project-list");
+
+    if (!projects.isOk) return toast.error(projects.message);
+    setProjects(projects.data);
+  }, []);
+
+  React.useEffect(() => {
+    fetchProjects();
+  }, [fetchProjects]);
+
   return (
     <Sidebar variant="inset" {...props}>
       <SidebarHeader>
@@ -92,7 +107,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        {projects && (
+          <NavProjects
+            projects={projects.map((p) => ({
+              name: p.name,
+              url: `/projects/${p.id}`,
+              icon: <NotebookIcon />,
+            }))}
+          />
+        )}
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       {/*<SidebarFooter>

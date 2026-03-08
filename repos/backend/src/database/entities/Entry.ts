@@ -24,12 +24,12 @@ export class EntryEntity {
   description?: string;
 
   @Column({
-    type: 'timestamptz',
+    type: 'datetime',
   })
   startTime: Date;
 
   @Column({
-    type: 'timestamptz',
+    type: 'datetime',
   })
   endTime: Date;
 

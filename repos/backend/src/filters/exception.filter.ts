@@ -4,6 +4,7 @@ import {
   ExceptionFilter,
   HttpException,
   HttpStatus,
+  Logger,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 
@@ -23,6 +24,9 @@ export class AppExceptionFilter implements ExceptionFilter {
       exception instanceof HttpException
         ? exception.getResponse()
         : (exception as Error).message;
+
+    if (status >= 500)
+      Logger.error(message, (exception as HttpException).stack);
 
     response.status(status).json({
       statusCode: status,

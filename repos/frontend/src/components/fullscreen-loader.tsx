@@ -1,11 +1,37 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { API } from "@/api/api";
 import { Spinner } from "@/components/ui/spinner";
 
+const loadingTasks = new Set<string>();
+const listeners = new Set<() => void>();
+
+export const fullscreenLoader = {
+  push: (id: string) => {
+    loadingTasks.add(id);
+    for (const listener of listeners) listener();
+  },
+  remove: (id: string) => {
+    loadingTasks.delete(id);
+    for (const listener of listeners) listener();
+  },
+  subscribe: (listener: () => void) => {
+    listeners.add(listener);
+    return () => {
+      listeners.delete(listener);
+    };
+  },
+  getSnapshot: () => loadingTasks.size > 0,
+};
+
 export function FullscreenLoader() {
   const [isReady, setIsReady] = useState(false);
+  const isLoadingTasks = useSyncExternalStore(
+    fullscreenLoader.subscribe,
+    fullscreenLoader.getSnapshot,
+    fullscreenLoader.getSnapshot,
+  );
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -25,14 +51,18 @@ export function FullscreenLoader() {
     return () => clearInterval(interval);
   }, []);
 
-  if (isReady) return null;
+  if (isReady && !isLoadingTasks) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-background">
+    <div
+      className={`fixed inset-0 z-50 flex items-center justify-center ${
+        isReady ? "bg-background/80 backdrop-blur-sm" : "bg-background"
+      }`}
+    >
       <div className="flex flex-col items-center gap-4">
         <Spinner className="size-10 text-primary" />
         <p className="text-sm font-medium text-muted-foreground animate-pulse">
-          Waiting for app to start...
+          {!isReady ? "Waiting for app to start..." : "Loading..."}
         </p>
       </div>
     </div>
