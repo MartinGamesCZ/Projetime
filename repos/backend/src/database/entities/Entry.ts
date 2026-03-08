@@ -33,7 +33,10 @@ export class EntryEntity {
   })
   endTime: Date;
 
-  @ManyToOne(() => ProjectEntity, (project) => project.id)
+  @ManyToOne(() => ProjectEntity, (project) => project.id, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   project: ProjectEntity;
 
   @CreateDateColumn()

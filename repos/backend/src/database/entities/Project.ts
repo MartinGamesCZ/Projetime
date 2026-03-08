@@ -23,7 +23,10 @@ export class ProjectEntity {
   })
   name: string;
 
-  @ManyToOne(() => ClientEntity, (client) => client.id)
+  @ManyToOne(() => ClientEntity, (client) => client.id, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   client: ClientEntity;
 
   @Column({
