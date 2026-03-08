@@ -10,6 +10,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { APP_HOST, APP_NAME, APP_PORT, IS_DEV } from './config';
 import { AppExceptionFilter } from './filters/exception.filter';
+import { ElectronAuthGuard } from './guards/electron-auth.guard';
 
 async function bootstrap() {
   let dbInitialized = false;
@@ -47,6 +48,7 @@ async function bootstrap() {
       SwaggerModule.createDocument(app, swaggerConfig),
     );
 
+  app.useGlobalGuards(new ElectronAuthGuard());
   app.setGlobalPrefix('/api');
   app.enableVersioning({
     type: VersioningType.URI,

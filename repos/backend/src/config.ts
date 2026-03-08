@@ -4,7 +4,7 @@ import { getOsConfigDirPath } from './os/path';
 
 export const IS_DEV = process.env.NODE_ENV === 'development';
 
-export const APP_PORT = 8772;
+export const APP_PORT = Number(process.env.PORT!);
 export const APP_HOST = '0.0.0.0';
 export const APP_NAME = 'Projetime';
 
